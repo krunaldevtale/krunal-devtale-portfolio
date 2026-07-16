@@ -4,8 +4,59 @@ import React from "react";
 import Link from "next/link";
 import { useTheme } from "@/context/ThemeContext";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useMouseGlow } from "@/hooks/useMouseGlow";
 import { BiBriefcase } from "react-icons/bi";
-import { experiences } from "@/data/experienceData";
+import { experiences, ExperienceItem } from "@/data/experienceData";
+
+interface ExperienceCardProps {
+  exp: ExperienceItem;
+  isDark: boolean;
+}
+
+const ExperienceCard: React.FC<ExperienceCardProps> = ({ exp, isDark }) => {
+  const cardRef = useMouseGlow<HTMLAnchorElement>();
+
+  return (
+    <Link
+      ref={cardRef}
+      href={`/experience/${exp.id}`}
+      className="bento-card glow-card block p-6 sm:p-8 hover:scale-[1.01] text-left"
+    >
+      <div className="flex justify-between items-start flex-wrap gap-2">
+        <span className="text-xs sm:text-sm font-mono text-emerald-400 font-medium tracking-wider">
+          {exp.duration}
+        </span>
+        <span className="text-xs font-mono text-slate-500 group-hover:text-emerald-400 transition-colors">
+          Read details &rarr;
+        </span>
+      </div>
+      
+      <h3 className="text-lg sm:text-xl font-heading font-semibold mt-3 text-slate-200 group-hover:text-emerald-400 transition-colors">
+        {exp.role}
+      </h3>
+      
+      <h4 className="text-sm sm:text-base font-primary text-slate-400 mt-1">
+        {exp.company}
+      </h4>
+
+      <p className="mt-4 text-sm sm:text-base leading-relaxed font-primary font-light text-slate-300">
+        {exp.description}
+      </p>
+
+      {/* Tech tags list */}
+      <div className="mt-6 flex flex-wrap gap-2 pt-4 border-t border-white/5">
+        {exp.skills.map((skill) => (
+          <span
+            key={skill}
+            className="text-[10px] sm:text-xs font-mono px-2.5 py-1 rounded-md border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 hover:border-white/10 transition-colors"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+    </Link>
+  );
+};
 
 const Experience: React.FC = () => {
   const { isDark } = useTheme();
@@ -15,10 +66,10 @@ const Experience: React.FC = () => {
     <section
       id="experience"
       ref={sectionRef as React.RefObject<HTMLDivElement>}
-      className="min-h-screen w-full flex items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 py-20 relative z-10 overflow-hidden"
+      className="min-h-screen w-full flex items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 py-24 relative z-10 overflow-hidden"
     >
       <div
-        className={`w-full max-w-3xl relative z-10 transition-all duration-1000 ease-out transform-gpu
+        className={`w-full max-w-4xl relative z-10 transition-all duration-1000 ease-out transform-gpu
           ${
             isVisible
               ? "opacity-100 translate-y-0 scale-100"
@@ -27,18 +78,18 @@ const Experience: React.FC = () => {
       >
         {/* Title */}
         <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-medium tracking-tight">
-            {/* Work Experience */}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold tracking-tight section-heading-gradient">
+            Experience
           </h2>
-          <div className="w-12 h-[2px] bg-blue-500 mx-auto mt-3 rounded-full" />
+          <div className="section-accent-gradient" />
         </div>
 
         {/* Timeline container */}
-        <div className="relative border-l border-white/10 dark:border-white/5 ml-4 sm:ml-6 flex flex-col gap-12">
+        <div className="relative border-l-2 border-dashed border-emerald-500/20 ml-4 sm:ml-8 flex flex-col gap-12">
           {experiences.map((exp) => (
-            <div key={exp.id} className="relative pl-8 sm:pl-10">
+            <div key={exp.id} className="relative pl-8 sm:pl-12">
               {/* Timeline marker node */}
-              <div className="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full border border-blue-500/20 bg-slate-900 flex items-center justify-center text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.15)] overflow-hidden">
+              <div className="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full border border-emerald-500/30 bg-[#0d0e15] flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)] overflow-hidden transition-all duration-300 hover:scale-110 hover:border-emerald-400 hover:text-white">
                 {exp.logo ? (
                   <img src={exp.logo} alt={`${exp.company} Logo`} className="w-full h-full object-cover" />
                 ) : (
@@ -46,49 +97,8 @@ const Experience: React.FC = () => {
                 )}
               </div>
 
-              {/* Experience Card */}
-              <Link
-                href={`/experience/${exp.id}`}
-                className={`group block p-6 sm:p-8 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.01] hover:border-blue-500/40 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]
-                  ${
-                    isDark
-                      ? "bg-slate-950/40 border-white/10 text-white shadow-black/20"
-                      : "bg-white/40 border-black/10 text-gray-900 shadow-black/5"
-                  }`}
-              >
-                <div className="flex justify-between items-start">
-                  <span className="text-xs sm:text-sm font-mono text-blue-400 font-medium tracking-wider">
-                    {exp.duration}
-                  </span>
-                  <span className="text-xs font-mono text-slate-500 group-hover:text-blue-400 transition-colors">
-                    Read details &rarr;
-                  </span>
-                </div>
-                
-                <h3 className="text-lg sm:text-xl font-heading font-medium mt-2 group-hover:text-blue-400 transition-colors">
-                  {exp.role}
-                </h3>
-                
-                <h4 className="text-sm sm:text-base font-primary text-gray-400 mt-1">
-                  {exp.company}
-                </h4>
-
-                <p className="mt-4 text-sm sm:text-base leading-relaxed font-primary font-light text-slate-300">
-                  {exp.description}
-                </p>
-
-                {/* Tech tags list */}
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {exp.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="text-[11px] sm:text-xs font-mono px-2.5 py-1 rounded-md border border-white/5 bg-white/5 text-slate-300"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </Link>
+              {/* Mapped custom card component to isolate hooks */}
+              <ExperienceCard exp={exp} isDark={isDark} />
             </div>
           ))}
         </div>

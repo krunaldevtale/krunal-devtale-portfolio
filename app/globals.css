@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-primary: var(--font-inter);
-  --font-heading: var(--font-space-grotesk);
-  --font-secondary: var(--font-poppins);
+  --font-primary: var(--font-plus-jakarta-sans);
+  --font-heading: var(--font-outfit);
+  --font-secondary: var(--font-plus-jakarta-sans);
   --font-mono: var(--font-jetbrains-mono);
 
   --animate-fade-in-down: fade-in-down 0.5s ease-out;
@@ -26,16 +26,38 @@ html {
   background-color: #ffffff;
   color: #111827;
   transition: background-color 0.3s ease, color 0.3s ease;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.3) #030504;
 }
 
 html.dark {
-  background-color: #030014; /* Deep, premium space black */
+  background-color: #030504; /* Obsidian Emerald black */
   color: #f9fafb;
+}
+
+/* Custom Scrollbar for Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030504;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.2), rgba(20, 184, 166, 0.4), rgba(245, 158, 11, 0.2));
+  border-radius: 9999px;
+  border: 1px solid #030504;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.4), rgba(20, 184, 166, 0.6), rgba(245, 158, 11, 0.4));
 }
 
 body {
   background-color: transparent;
-  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-plus-jakarta-sans), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -46,11 +68,11 @@ body {
 }
 
 .font-heading {
-  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  font-family: var(--font-outfit), system-ui, sans-serif;
 }
 
 .font-secondary {
-  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-family: var(--font-plus-jakarta-sans), system-ui, sans-serif;
 }
 
 .font-mono {
@@ -284,3 +306,104 @@ a {
 a:hover {
   color: #4b5563;
 }
+
+/* ========== BENTO GRID & DYNAMIC GLOW CARDS ========== */
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+.bento-card {
+  position: relative;
+  background: rgba(4, 8, 6, 0.45); /* Obsidian emerald backdrop */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.bento-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 1.5px;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15),   /* Emerald */
+    rgba(20, 184, 166, 0.15),   /* Teal */
+    rgba(245, 158, 11, 0.15)    /* Gold */
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.4;
+  transition: opacity 0.4s ease, background 0.4s ease;
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7),
+              0 0 35px -5px rgba(16, 185, 129, 0.18);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.bento-card:hover::before {
+  opacity: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.45),
+    rgba(20, 184, 166, 0.45),
+    rgba(245, 158, 11, 0.45)
+  );
+}
+
+/* Mouse spotlight glow effect */
+.glow-card {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+}
+
+.glow-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    500px circle at var(--mouse-x) var(--mouse-y),
+    rgba(16, 185, 129, 0.08), /* Emerald glow spotlight */
+    transparent 45%
+  );
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.glow-card:hover::after {
+  opacity: 1;
+}
+
+/* Theme color adjustments for scroll and layout sections */
+.section-heading-gradient {
+  background: linear-gradient(135deg, #f8fafc 40%, #a7f3d0 100%); /* soft emerald white */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-accent-gradient {
+  background: linear-gradient(90deg, #10b981, #f59e0b); /* Emerald to Gold */
+  height: 3px;
+  width: 60px;
+  border-radius: 9999px;
+  margin: 0.75rem auto 0;
+}
+

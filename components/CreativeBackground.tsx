@@ -1,8 +1,29 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import * as THREE from "three";
 import { useTheme } from "@/context/ThemeContext";
+
+interface BlobConfig {
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  color: string;
+  baseRadius: number;
+}
+
+interface StarConfig {
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  twinkleSpeed: number;
+  phase: number;
+  depth: number; // for parallax
+}
 
 const CreativeBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -12,236 +33,240 @@ const CreativeBackground: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const container = canvas.parentElement;
-    if (!container) return;
-    
-    // Ensure initial width/height are non-zero
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      alpha: true,
-      antialias: true,
-    });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
-    // Scene
-    const scene = new THREE.Scene();
+    // Initialize large soft colored blobs
+    const blobs: BlobConfig[] = [
+      {
+        x: width * 0.25,
+        y: height * 0.3,
+        targetX: width * 0.25,
+        targetY: height * 0.3,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        baseRadius: Math.min(width, height) * 0.45,
+        radius: Math.min(width, height) * 0.45,
+        color: isDark ? "rgba(16, 185, 129, 0.22)" : "rgba(16, 185, 129, 0.08)", // Emerald
+      },
+      {
+        x: width * 0.75,
+        y: height * 0.2,
+        targetX: width * 0.75,
+        targetY: height * 0.2,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        baseRadius: Math.min(width, height) * 0.4,
+        radius: Math.min(width, height) * 0.4,
+        color: isDark ? "rgba(20, 184, 166, 0.2)" : "rgba(20, 184, 166, 0.08)", // Teal
+      },
+      {
+        x: width * 0.5,
+        y: height * 0.7,
+        targetX: width * 0.5,
+        targetY: height * 0.7,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        baseRadius: Math.min(width, height) * 0.5,
+        radius: Math.min(width, height) * 0.5,
+        color: isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(245, 158, 11, 0.06)", // Gold
+      },
+      {
+        x: width * 0.8,
+        y: height * 0.8,
+        targetX: width * 0.8,
+        targetY: height * 0.8,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        baseRadius: Math.min(width, height) * 0.35,
+        radius: Math.min(width, height) * 0.35,
+        color: isDark ? "rgba(4, 120, 87, 0.18)" : "rgba(4, 120, 87, 0.06)", // Deep Emerald
+      },
+    ];
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(65, width / height, 0.1, 1000);
-    camera.position.set(0, 10, 26);
+    // Dedicated interactive cursor-following glow blob (Emerald/Teal light)
+    const cursorBlob = {
+      x: width / 2,
+      y: height / 2,
+      radius: Math.min(width, height) * 0.26,
+      color: isDark ? "rgba(20, 184, 166, 0.26)" : "rgba(20, 184, 166, 0.12)", // Teal/Emerald light
+    };
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-
-    const dirLight1 = new THREE.DirectionalLight(0x3b82f6, 2.0); // Blue light
-    dirLight1.position.set(10, 20, 15);
-    scene.add(dirLight1);
-
-    const dirLight2 = new THREE.DirectionalLight(0xec4899, 1.5); // Pink light
-    dirLight2.position.set(-10, -10, -5);
-    scene.add(dirLight2);
-
-    // 1. 3D Floating Wireframe Objects (Placed offset on sides so they don't cover text)
-    const floatGroup = new THREE.Group();
-    scene.add(floatGroup);
-
-    // Right Float: 3D Holographic Icosahedron
-    const icoGeom = new THREE.IcosahedronGeometry(2.5, 1);
-    const icoMat = new THREE.MeshBasicMaterial({
-      color: 0x3b82f6, // Neon Blue
-      wireframe: true,
-      transparent: true,
-      opacity: 0.25,
-    });
-    const icosahedron = new THREE.Mesh(icoGeom, icoMat);
-    icosahedron.position.set(12, 3, -2);
-    floatGroup.add(icosahedron);
-
-    // Left Float: 3D Holographic Dodecahedron
-    const dodecaGeom = new THREE.DodecahedronGeometry(1.8, 0);
-    const dodecaMat = new THREE.MeshBasicMaterial({
-      color: 0xec4899, // Neon Pink/Magenta
-      wireframe: true,
-      transparent: true,
-      opacity: 0.2,
-    });
-    const dodecahedron = new THREE.Mesh(dodecaGeom, dodecaMat);
-    dodecahedron.position.set(-12, -3, 0);
-    floatGroup.add(dodecahedron);
-
-    // 2. 3D Glowing Particle Wave Field (Tron style wavy grid)
-    const waveCountX = 75;
-    const waveCountY = 75;
-    const waveParticles = waveCountX * waveCountY;
-    
-    const waveGeom = new THREE.BufferGeometry();
-    const positions = new Float32Array(waveParticles * 3);
-    const colors = new Float32Array(waveParticles * 3);
-
-    const color1 = new THREE.Color("#3b82f6"); // Blue
-    const color2 = new THREE.Color("#ec4899"); // Pink
-
-    let idx = 0;
-    const spacing = 0.65;
-    const waveWidth = waveCountX * spacing;
-    const waveDepth = waveCountY * spacing;
-
-    for (let x = 0; x < waveCountX; x++) {
-      for (let y = 0; y < waveCountY; y++) {
-        // Center the wave grid
-        const posX = x * spacing - waveWidth / 2;
-        const posZ = y * spacing - waveDepth / 2;
-
-        positions[idx * 3] = posX;
-        positions[idx * 3 + 1] = 0; // Height will be animated in render loop
-        positions[idx * 3 + 2] = posZ;
-
-        // Color gradient across the wave field
-        const mixedColor = color1.clone().lerp(color2, x / waveCountX);
-        colors[idx * 3] = mixedColor.r;
-        colors[idx * 3 + 1] = mixedColor.g;
-        colors[idx * 3 + 2] = mixedColor.b;
-
-        idx++;
-      }
+    // Initialize subtle background stars
+    const starsCount = 120;
+    const stars: StarConfig[] = [];
+    for (let i = 0; i < starsCount; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: 0.8 + Math.random() * 1.2,
+        opacity: 0.1 + Math.random() * 0.8,
+        twinkleSpeed: 0.005 + Math.random() * 0.015,
+        phase: Math.random() * Math.PI * 2,
+        depth: 0.1 + Math.random() * 0.9, // Parallax depth factor
+      });
     }
-
-    waveGeom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    waveGeom.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-    const waveMat = new THREE.PointsMaterial({
-      size: 0.12,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.45,
-      sizeAttenuation: true,
-    });
-
-    const waveField = new THREE.Points(waveGeom, waveMat);
-    waveField.position.y = -6; // Lower the field to act as ground
-    scene.add(waveField);
-
-    // 3. Background Starfield
-    const starsCount = 1000;
-    const starsGeom = new THREE.BufferGeometry();
-    const starsPos = new Float32Array(starsCount * 3);
-
-    for (let i = 0; i < starsCount * 3; i++) {
-      starsPos[i] = (Math.random() - 0.5) * 120;
-    }
-    starsGeom.setAttribute("position", new THREE.BufferAttribute(starsPos, 3));
-
-    const starsMat = new THREE.PointsMaterial({
-      size: 0.08,
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.6,
-      sizeAttenuation: true,
-    });
-    const starfield = new THREE.Points(starsGeom, starsMat);
-    scene.add(starfield);
 
     // Mouse Tracking
     const mouse = {
-      x: 0,
-      y: 0,
-      targetX: 0,
-      targetY: 0,
+      x: width / 2,
+      y: height / 2,
+      targetX: width / 2,
+      targetY: height / 2,
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouse.targetX = (e.clientX - window.innerWidth / 2) / 100;
-      mouse.targetY = (e.clientY - window.innerHeight / 2) / 100;
+      mouse.targetX = e.clientX;
+      mouse.targetY = e.clientY;
     };
-
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Scroll Tracking for 3D Camera Transitions
+    // Scroll tracking
     let scrollY = 0;
     const handleScroll = () => {
       scrollY = window.scrollY;
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
 
-    // Resize Handler
+    // Handle resize
     const handleResize = () => {
-      const w = container.offsetWidth || window.innerWidth;
-      const h = container.offsetHeight || window.innerHeight;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
 
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-
-      renderer.setSize(w, h);
+      // Re-scale blob base radii
+      blobs.forEach((blob, idx) => {
+        const factor = idx === 0 ? 0.45 : idx === 1 ? 0.4 : idx === 2 ? 0.5 : 0.35;
+        blob.baseRadius = Math.min(width, height) * factor;
+      });
+      cursorBlob.radius = Math.min(width, height) * 0.26;
     };
-
     window.addEventListener("resize", handleResize);
 
-    // Animation Loop
+    // Animation loop
     let animationId: number;
     let time = 0;
-    const clock = new THREE.Clock();
 
     const animate = () => {
-      const delta = clock.getDelta();
-      time += delta * 0.8; // Control speed of waves
+      time += 0.002;
+      ctx.clearRect(0, 0, width, height);
 
-      // Determine viewport height for scrolling calculations
-      const viewHeight = window.innerHeight || 800;
-      // Scroll percentage from 0 (top) to 1.2 (scrolled past first screen)
-      const scrollPercent = Math.min(1.2, scrollY / viewHeight);
+      // Scroll progress
+      const docHeight = document.documentElement.scrollHeight || 1000;
+      const winHeight = window.innerHeight;
+      const maxScroll = docHeight - winHeight;
+      const scrollPercent = maxScroll > 0 ? Math.min(1.0, Math.max(0.0, scrollY / maxScroll)) : 0;
 
-      // Camera scroll targets (camera dips down and zooms in slightly on scroll)
-      const targetCamY = 10 - scrollPercent * 14; 
-      const targetCamZ = 26 - scrollPercent * 6;
-      const targetLookAtY = -1 - scrollPercent * 2;
+      // Smooth mouse interpolation
+      mouse.x += (mouse.targetX - mouse.x) * 0.08;
+      mouse.y += (mouse.targetY - mouse.y) * 0.08;
 
-      // 1. Rotate the side 3D shapes (speeds up as you scroll!)
-      const rotateSpeedFactor = 1 + scrollPercent * 2.5;
-      icosahedron.rotation.x += 0.005 * rotateSpeedFactor;
-      icosahedron.rotation.y += 0.008 * rotateSpeedFactor;
-      dodecahedron.rotation.x -= 0.004 * rotateSpeedFactor;
-      dodecahedron.rotation.y += 0.006 * rotateSpeedFactor;
-
-      // Pull floating shapes slightly closer/inward on scroll
-      icosahedron.position.x = 12 - scrollPercent * 4;
-      dodecahedron.position.x = -12 + scrollPercent * 4;
-
-      // 2. Animate the Particle Wave heights (creating undulating waves)
-      const positionsAttr = waveGeom.attributes.position.array as Float32Array;
-      let particleIdx = 0;
-
-      for (let x = 0; x < waveCountX; x++) {
-        for (let y = 0; y < waveCountY; y++) {
-          // Double sine wave equation based on grid position and time
-          const waveHeight = 
-            Math.sin(x * 0.18 + time) * 1.8 + 
-            Math.cos(y * 0.18 + time) * 1.8;
-
-          positionsAttr[particleIdx * 3 + 1] = waveHeight;
-          particleIdx++;
+      // 1. Draw and Update Blobs (Aurora effect)
+      blobs.forEach((blob, idx) => {
+        // Define target coordinates based on scroll stages
+        if (scrollPercent < 0.3) {
+          // Top Scroll (Hero) - Spread out
+          blob.targetX = idx === 0 ? width * 0.2 : idx === 1 ? width * 0.8 : idx === 2 ? width * 0.5 : width * 0.9;
+          blob.targetY = idx === 0 ? height * 0.2 : idx === 1 ? height * 0.3 : idx === 2 ? height * 0.8 : height * 0.7;
+        } else if (scrollPercent < 0.7) {
+          // Mid Scroll (Skills/Experience) - Pulled closer to center, swirling
+          const angleOffset = time * 2 + (idx * Math.PI) / 2;
+          blob.targetX = width / 2 + Math.cos(angleOffset) * (width * 0.15);
+          blob.targetY = height / 2 + Math.sin(angleOffset) * (height * 0.15);
+        } else {
+          // Bottom Scroll (Projects/Contact) - Move to corners
+          blob.targetX = idx === 0 ? width * 0.8 : idx === 1 ? width * 0.2 : idx === 2 ? width * 0.1 : width * 0.9;
+          blob.targetY = idx === 0 ? height * 0.8 : idx === 1 ? height * 0.7 : idx === 2 ? height * 0.2 : height * 0.1;
         }
-      }
-      waveGeom.attributes.position.needsUpdate = true;
 
-      // 3. Slowly rotate the background starfield
-      starfield.rotation.y += 0.0002;
+        // Slowly interpolate positions
+        blob.x += (blob.targetX - blob.x) * 0.02;
+        blob.y += (blob.targetY - blob.y) * 0.02;
 
-      // 4. Smooth Camera Parallax from Mouse + Scroll position
-      mouse.x += (mouse.targetX - mouse.x) * 0.05;
-      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+        // Apply slight float drift velocity
+        blob.x += Math.sin(time + idx) * 0.15;
+        blob.y += Math.cos(time + idx) * 0.15;
 
-      camera.position.x += (mouse.x - camera.position.x) * 0.05;
-      camera.position.y += (targetCamY + (-mouse.y) * 0.05 - camera.position.y) * 0.05;
-      camera.position.z += (targetCamZ - camera.position.z) * 0.05;
-      camera.lookAt(new THREE.Vector3(0, targetLookAtY, 0));
+        // Apply interactive mouse gravity/pull
+        const dx = mouse.x - blob.x;
+        const dy = mouse.y - blob.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 400) {
+          const force = (400 - dist) / 400;
+          blob.x += dx * force * 0.02;
+          blob.y += dy * force * 0.02;
+        }
 
-      renderer.render(scene, camera);
+        // Pulse blob size slightly
+        blob.radius = blob.baseRadius * (1.0 + Math.sin(time * 3 + idx) * 0.05);
+
+        // Draw radial gradient blob
+        const grad = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.radius);
+        grad.addColorStop(0, blob.color);
+        grad.addColorStop(0.5, blob.color.replace(/[\d.]+\)$/, `${parseFloat(blob.color.match(/[\d.]+\)$/)?.[0] ?? "0") * 0.5})`));
+        grad.addColorStop(1, "rgba(3, 5, 4, 0)");
+        
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(blob.x, blob.y, blob.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // 2. Draw and Update cursor-following interactive blob
+      // It follows the mouse with a slight fluid latency (lerp 0.06)
+      cursorBlob.x += (mouse.x - cursorBlob.x) * 0.06;
+      cursorBlob.y += (mouse.y - cursorBlob.y) * 0.06;
+
+      const cursorGrad = ctx.createRadialGradient(
+        cursorBlob.x, 
+        cursorBlob.y, 
+        0, 
+        cursorBlob.x, 
+        cursorBlob.y, 
+        cursorBlob.radius
+      );
+      cursorGrad.addColorStop(0, cursorBlob.color);
+      cursorGrad.addColorStop(0.5, cursorBlob.color.replace(/[\d.]+\)$/, `${parseFloat(cursorBlob.color.match(/[\d.]+\)$/)?.[0] ?? "0") * 0.4})`));
+      cursorGrad.addColorStop(1, "rgba(3, 5, 4, 0)");
+
+      ctx.fillStyle = cursorGrad;
+      ctx.beginPath();
+      ctx.arc(cursorBlob.x, cursorBlob.y, cursorBlob.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 3. Draw and Update Parallax Twinkling Stars
+      stars.forEach((star) => {
+        // Parallax vertical movement based on scrollY
+        const starY = (star.y - scrollY * star.depth * 0.35 + height * 100) % height;
+        
+        // Slight horizontal push from mouse movement
+        const mouseOffset = ((mouse.x - width / 2) / (width / 2)) * 10 * star.depth;
+        const starX = (star.x + mouseOffset + width) % width;
+
+        // Twinkle stars opacity
+        star.phase += star.twinkleSpeed;
+        
+        // React to cursor closeness: stars near the cursor blob glow brighter
+        const dx = mouse.x - starX;
+        const dy = mouse.y - starY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        let glowBoost = 1.0;
+        if (dist < 200) {
+          glowBoost = 1.0 + (200 - dist) / 200 * 1.5; // boost opacity by up to 150% near cursor
+        }
+
+        const currentOpacity = Math.min(1.0, Math.max(0.05, star.opacity * (0.4 + Math.sin(star.phase) * 0.6) * glowBoost));
+
+        // Draw soft circular star
+        ctx.fillStyle = isDark 
+          ? `rgba(255, 255, 255, ${currentOpacity})`
+          : `rgba(4, 120, 87, ${currentOpacity * 0.4})`; // soft green stars in light mode
+        ctx.beginPath();
+        ctx.arc(starX, starY, star.size * (glowBoost > 1 ? 1.2 : 1.0), 0, Math.PI * 2);
+        ctx.fill();
+      });
 
       animationId = requestAnimationFrame(animate);
     };
@@ -254,15 +279,6 @@ const CreativeBackground: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationId);
-      renderer.dispose();
-      icoGeom.dispose();
-      icoMat.dispose();
-      dodecaGeom.dispose();
-      dodecaMat.dispose();
-      waveGeom.dispose();
-      waveMat.dispose();
-      starsGeom.dispose();
-      starsMat.dispose();
     };
   }, [isDark]);
 
@@ -284,18 +300,7 @@ const CreativeBackground: React.FC = () => {
           width: "100%",
           height: "100%",
           zIndex: 0,
-        }}
-      />
-      {/* Subtle overlay grid lines */}
-      <div
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-20 dark:opacity-8"
-        style={{
-          backgroundImage: isDark
-            ? "radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px)"
-            : "radial-gradient(rgba(15, 23, 42, 0.08) 1.2px, transparent 1.2px)",
-          backgroundSize: "28px 28px",
-          maskImage: "radial-gradient(ellipse at center, black, transparent 75%)",
-          WebkitMaskImage: "radial-gradient(ellipse at center, black, transparent 75%)",
+          filter: "blur(70px) saturate(160%)", // Merges the blobs and cursor glow into a liquid fluid mesh
         }}
       />
     </div>

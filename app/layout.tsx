@@ -1,23 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, Poppins, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { Analytics } from "@vercel/analytics/next";
 
-const inter = Inter({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-plus-jakarta-sans",
 });
 
-const spaceGrotesk = Space_Grotesk({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-});
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-poppins",
+  variable: "--font-outfit",
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -26,16 +20,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Liladhar Ithole | Full Stack SDE & Best Frontend Engineer",
-  description: "Liladhar Ithole is a Full Stack SDE, Backend Developer, Frontend Engineer, and AI Engineer in Pune, India. Specializing in high-performance NestJS, Next.js, MySQL, and scalable Node.js architectures.",
+  title: "Krunal Devtale | Full Stack SDE & Software Engineer",
+  description: "Krunal Devtale is a Full Stack SDE, Backend Developer, and Frontend Engineer in Pune, India. Specializing in high-performance NestJS, Next.js, MySQL, and scalable Node.js architectures.",
   keywords: [
-    "lila",
-    "liladhar",
-    "liladharr",
-    "liladharrrrr",
-    "liladhar ithole",
-    "liluu",
-    "lilu",
+    "krunal",
+    "devtale",
+    "krunal devtale",
     "sde",
     "software",
     "software developer",
@@ -48,9 +38,6 @@ export const metadata: Metadata = {
     "TypeScript",
     "AI",
     "Artificial Intelligence",
-    "Agentic AI",
-    "Python",
-    "Python AI",
     "AI Software Engineer",
     "Java",
     "Data Structures and Algorithms",
@@ -59,7 +46,7 @@ export const metadata: Metadata = {
     "Problem Solving",
     "Java SDE",
     "Java developer Pune",
-    "Liladhar Ithole Pune",
+    "Krunal Devtale Pune",
     "best SDE India",
     "best frontend developer India",
     "best frontend engineer",
@@ -91,9 +78,9 @@ export const metadata: Metadata = {
     "Redis backend developer India",
     "best full stack engineer India"
   ],
-  authors: [{ name: "Liladhar Ithole", url: "https://github.com/Liladharithole" }],
-  creator: "@Liladharrrrr",
-  publisher: "Liladhar Ithole",
+  authors: [{ name: "Krunal Devtale", url: "https://github.com/KrunalDevtale" }],
+  creator: "@KrunalDevtale",
+  publisher: "Krunal Devtale",
   robots: {
     index: true,
     follow: true,
@@ -108,16 +95,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://liladhar.com",
-    title: "Liladhar Ithole | Full Stack SDE & Best Frontend Engineer in India",
-    description: "Liladhar Ithole is a top Full Stack SDE, Frontend Engineer, and Backend Developer in Pune, India. Specializing in high-performance NestJS, Next.js, MySQL, and scalable Node.js architectures.",
-    siteName: "Liladhar Ithole Portfolio",
+    url: "https://krunaldevtale.com",
+    title: "Krunal Devtale | Full Stack SDE & Software Engineer",
+    description: "Krunal Devtale is a Full Stack SDE, Frontend Engineer, and Backend Developer in Pune, India. Specializing in high-performance NestJS, Next.js, MySQL, and scalable Node.js architectures.",
+    siteName: "Krunal Devtale Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Liladhar Ithole | Full Stack SDE & Best Frontend Engineer in India",
-    description: "Liladhar Ithole is a top Full Stack SDE, Frontend Engineer, and Backend Developer in Pune, India. Specializing in high-performance NestJS, Next.js, MySQL, and scalable Node.js architectures.",
-    creator: "@Liladharrrrr",
+    title: "Krunal Devtale | Full Stack SDE & Software Engineer",
+    description: "Krunal Devtale is a Full Stack SDE, Frontend Engineer, and Backend Developer in Pune, India. Specializing in high-performance NestJS, Next.js, MySQL, and scalable Node.js architectures.",
+    creator: "@KrunalDevtale",
   },
 };
 
@@ -127,7 +114,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${poppins.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${plusJakartaSans.variable} ${outfit.variable} ${jetbrainsMono.variable}`}>
       <head>
         {/* Structured JSON-LD Data for Google Search Indexing */}
         <script
@@ -136,12 +123,11 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              "name": "Liladhar Ithole",
-              "url": "https://liladhar.com",
+              "name": "Krunal Devtale",
+              "url": "https://krunaldevtale.com",
               "sameAs": [
-                "https://github.com/Liladharithole",
-                "https://www.linkedin.com/in/liladhar-ithole/",
-                "https://x.com/Liladharrrrr"
+                "https://github.com/KrunalDevtale",
+                "https://www.linkedin.com/in/krunal-devtale/",
               ],
               "jobTitle": "Full Stack Software Development Engineer",
               "knowsAbout": [
@@ -168,7 +154,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>
           {children}
         </ThemeProvider>

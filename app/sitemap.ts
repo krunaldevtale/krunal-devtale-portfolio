@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { experiences } from "@/data/experienceData";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://liladhar.com";
+  const baseUrl = "https://krunaldevtale.com";
 
   const experienceUrls = experiences.map((exp) => ({
     url: `${baseUrl}/experience/${exp.id}`,

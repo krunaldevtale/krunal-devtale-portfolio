@@ -18,7 +18,7 @@ const cn = (...classes: (string | undefined | null | boolean)[]) => {
 };
 
 const inputWrapperClassName = 
-  "bg-slate-900/30 border border-white/10 has-[:focus-visible]:border-blue-500 relative w-full rounded-lg px-4 py-2.5 transition-colors";
+  "bg-slate-900/30 border border-white/10 has-[:focus-visible]:border-indigo-500 relative w-full rounded-lg px-4 py-2.5 transition-colors";
 
 const inputClassName =
   "w-full bg-transparent outline-none placeholder:text-slate-500 text-sm";
@@ -308,7 +308,7 @@ const SmoothInput = React.forwardRef<HTMLInputElement, SmoothInputProps>(
             className="pointer-events-none invisible absolute top-0 left-0 whitespace-pre"
           />
           <motion.div
-            className="bg-blue-500 pointer-events-none col-start-1 col-end-2 row-start-1 row-end-2 h-[1.1em] w-0.5 self-center"
+            className="bg-indigo-500 pointer-events-none col-start-1 col-end-2 row-start-1 row-end-2 h-[1.1em] w-0.5 self-center"
             style={{ x: springCaretX, opacity: caretOpacity }}
           />
         </div>

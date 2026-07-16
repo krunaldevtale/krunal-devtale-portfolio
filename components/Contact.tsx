@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useMouseGlow } from "@/hooks/useMouseGlow";
 import {
   FiMail,
   FiPhone,
@@ -17,6 +18,10 @@ import { SmoothInput } from "@/components/v1/skiper106";
 const Contact: React.FC = () => {
   const { isDark } = useTheme();
   const [sectionRef, isVisible] = useScrollAnimation({ threshold: 0.1 });
+
+  // Mouse spotlight glow refs
+  const infoCardRef = useMouseGlow<HTMLDivElement>();
+  const formCardRef = useMouseGlow<HTMLDivElement>();
 
   // Form State
   const [name, setName] = useState("");
@@ -65,7 +70,7 @@ const Contact: React.FC = () => {
     <section
       id="contact"
       ref={sectionRef as React.RefObject<HTMLDivElement>}
-      className="min-h-screen w-full flex items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 py-20 relative z-10 overflow-hidden"
+      className="min-h-screen w-full flex items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 py-24 relative z-10 overflow-hidden"
     >
       <div
         className={`w-full max-w-5xl relative z-10 transition-all duration-1000 ease-out transform-gpu
@@ -77,50 +82,47 @@ const Contact: React.FC = () => {
       >
         {/* Title */}
         <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-medium tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold tracking-tight section-heading-gradient">
             Contact Me
           </h2>
-          <div className="w-12 h-[2px] bg-blue-500 mx-auto mt-3 rounded-full" />
+          <div className="section-accent-gradient" />
         </div>
 
         {/* Grid Split */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
           {/* Left Column: Contact Details */}
           <div
-            className={`p-8 sm:p-10 rounded-2xl border backdrop-blur-md flex flex-col justify-between
-              ${
-                isDark
-                  ? "bg-slate-950/40 border-white/10 text-white shadow-black/20"
-                  : "bg-white/40 border-black/10 text-gray-900 shadow-black/5"
-              }`}
+            ref={infoCardRef}
+            className="bento-card glow-card p-8 sm:p-10 flex flex-col justify-between text-left"
           >
             <div>
-              <h3 className="text-xl font-heading font-medium mb-6">Contact Information</h3>
+              <h3 className="text-xl font-heading font-semibold text-slate-200 mb-6">Contact Information</h3>
               <p className="text-sm sm:text-base leading-relaxed font-primary font-light text-slate-300 mb-8">
                 Feel free to reach out for collaborations, project opportunities, or just to say hello! I will do my best to get back to you as soon as possible.
               </p>
 
-              <div className="flex flex-col gap-5 text-slate-300 font-primary">
+              <div className="flex flex-col gap-6 text-slate-300 font-primary font-light">
                 <div className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded-full border border-blue-500/20 bg-blue-500/5 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform duration-200">
+                  <div className="w-10 h-10 rounded-full border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform duration-200">
                     <FiMail />
                   </div>
-                  <a href="mailto:liladharrrrr@gmail.com" className="hover:text-blue-400 text-sm sm:text-base transition-colors">
-                    liladharrrrr@gmail.com
+                  <a href="mailto:krunaldevtale@gmail.com" className="hover:text-emerald-400 text-sm sm:text-base transition-colors">
+                    krunaldevtale79@gmail.com
                   </a>
                 </div>
 
                 <div className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded-full border border-blue-500/20 bg-blue-500/5 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform duration-200">
+                  <div className="w-10 h-10 rounded-full border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform duration-200">
                     <FiPhone />
                   </div>
-                  <a href="tel:+917888232205" className="hover:text-blue-400 text-sm sm:text-base transition-colors">
-                    +91 7888232205
+                  <a href="tel:+917999901088" className="hover:text-emerald-400 text-sm sm:text-base transition-colors">
+                    +91 7999901088
                   </a>
                 </div>
 
                 <div className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded-full border border-blue-500/20 bg-blue-500/5 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform duration-200">
+                  <div className="w-10 h-10 rounded-full border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform duration-200">
                     <IoLocationOutline />
                   </div>
                   <span className="text-sm sm:text-base">Pune, India</span>
@@ -131,28 +133,28 @@ const Contact: React.FC = () => {
             {/* Social Icons */}
             <div className="pt-8 mt-8 border-t border-white/5 flex gap-4">
               <a
-                href="https://github.com/Liladharithole"
+                href="https://github.com/krunaldevtale"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white flex items-center justify-center text-lg transition-transform hover:scale-110"
+                className="w-10 h-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-transform hover:scale-110"
                 aria-label="GitHub"
               >
                 <FiGithub />
               </a>
               <a
-                href="https://www.linkedin.com/in/liladhar-ithole/"
+                href="https://www.linkedin.com/in/krunal-devtale/"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white flex items-center justify-center text-lg transition-transform hover:scale-110"
+                className="w-10 h-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-transform hover:scale-110"
                 aria-label="LinkedIn"
               >
                 <FiLinkedin />
               </a>
               <a
-                href="https://x.com/Liladharrrrr"
+                href="https://x.com/KrunalDevtale"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white flex items-center justify-center text-lg transition-transform hover:scale-110"
+                className="w-10 h-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-transform hover:scale-110"
                 aria-label="Twitter"
               >
                 <FiTwitter />
@@ -162,16 +164,12 @@ const Contact: React.FC = () => {
 
           {/* Right Column: Form */}
           <div
-            className={`p-8 sm:p-10 rounded-2xl border backdrop-blur-md
-              ${
-                isDark
-                  ? "bg-slate-950/40 border-white/10 text-white shadow-black/20"
-                  : "bg-white/40 border-black/10 text-gray-900 shadow-black/5"
-              }`}
+            ref={formCardRef}
+            className="bento-card glow-card p-8 sm:p-10 text-left"
           >
-            <h3 className="text-xl font-heading font-medium mb-6">Send Message</h3>
+            <h3 className="text-xl font-heading font-semibold text-slate-200 mb-6">Send Message</h3>
             
-            <form onSubmit={handleFormSubmit} className="flex flex-col gap-4 font-primary">
+            <form onSubmit={handleFormSubmit} className="flex flex-col gap-5 font-primary">
               <div>
                 <label htmlFor="form-name" className="block text-xs font-mono text-slate-400 mb-1.5">Name</label>
                 <SmoothInput
@@ -204,7 +202,7 @@ const Contact: React.FC = () => {
                   required
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder="we can talk..."
+                  placeholder="Hello!"
                 />
               </div>
 
@@ -217,7 +215,7 @@ const Contact: React.FC = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Let's build something amazing..."
-                  className="w-full px-4 py-2.5 rounded-lg border border-white/10 bg-slate-900/30 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-white/10 bg-[#0d0e15]/40 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors resize-none placeholder:text-slate-500"
                 />
               </div>
 
@@ -236,7 +234,7 @@ const Contact: React.FC = () => {
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="mt-2 w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white py-3 rounded-full text-sm font-heading font-medium flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                className="mt-2 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-500 hover:scale-[1.02] disabled:bg-emerald-800 text-white py-3.5 rounded-full text-sm font-heading font-medium flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]"
               >
                 <span>{status === "submitting" ? "Sending..." : "Send Message"}</span>
                 <FiSend />
