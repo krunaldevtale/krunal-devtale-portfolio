@@ -13,14 +13,14 @@ const Hero: React.FC = () => {
   
   const terminalCode = `const developer = {
   name: "Krunal Devtale",
-  role: "Full Stack SDE",
+  role: "Full Stack Developer",
   location: "Pune, India",
   skills: [
-    "Next.js", "React", "Node.js",
-    "NestJS", "TypeScript", "MySQL"
+    "React.js", "JavaScript", "TypeScript",
+    "Node.js", "Express.js", "MongoDB"
   ],
-  passion: "High-performance architectures",
-  status: "Ready to innovate"
+  passion: "Sleek interfaces & scalable APIs",
+  status: "Open to opportunities"
 };`;
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const Hero: React.FC = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span>Available for new projects</span>
+              <span>Open to Full-Time Opportunities</span>
             </div>
 
             {/* Title */}

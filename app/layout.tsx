@@ -20,8 +20,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Krunal Devtale | Full Stack SDE & Software Engineer",
-  description: "Krunal Devtale is a Full Stack SDE, Backend Developer, and Frontend Engineer in Pune, India. Specializing in high-performance NestJS, Next.js, MySQL, and scalable Node.js architectures.",
+  title: "Krunal Devtale | Full Stack Developer",
+  description: "Krunal Devtale is a Full Stack Developer in Pune, India. Specializing in building responsive web applications using React.js, Node.js, Express, MongoDB, and modern UI architectures.",
   keywords: [
     "krunal",
     "devtale",
@@ -129,21 +129,25 @@ export default function RootLayout({
                 "https://github.com/KrunalDevtale",
                 "https://www.linkedin.com/in/krunal-devtale/",
               ],
-              "jobTitle": "Full Stack Software Development Engineer",
+              "jobTitle": "Full Stack Developer",
               "knowsAbout": [
                 "React.js",
-                "Next.js",
+                "JavaScript",
+                "TypeScript",
+                "HTML",
+                "CSS",
+                "Tailwind CSS",
+                "Framer Motion",
                 "Node.js",
                 "Express.js",
-                "NestJS",
-                "MySQL",
-                "Redis",
-                "BullMQ",
-                "TypeScript",
-                "Tailwind CSS",
-                "Full Stack Development",
-                "Frontend Engineering",
-                "Software Engineering"
+                "MongoDB",
+                "Mongoose",
+                "REST APIs",
+                "Git",
+                "GitHub",
+                "Postman",
+                "Vercel",
+                "Render"
               ],
               "address": {
                 "@type": "PostalAddress",

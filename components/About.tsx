@@ -91,7 +91,7 @@ const About: React.FC = () => {
                 </li>
                 <li className="flex justify-between py-2 border-b border-white/5">
                   <span className="text-slate-500">AVAILABILITY</span>
-                  <span className="text-emerald-400 text-right">Freelance / Full-Time</span>
+                  <span className="text-emerald-400 text-right">Full-Time</span>
                 </li>
                 <li className="flex justify-between py-2">
                   <span className="text-slate-500">MAIN STACK</span>

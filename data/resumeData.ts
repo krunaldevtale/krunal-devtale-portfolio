@@ -4,6 +4,6 @@ export interface ResumeInfo {
 }
 
 export const resumeInfo: ResumeInfo = {
-  filePath: "/resume/Liladhar Ithole - 2025.pdf",
-  downloadName: "Liladhar_Ithole_Resume.pdf",
+  filePath: "/resume/Krunal_Devtale_Resume.pdf",
+  downloadName: "Krunal_Devtale_Resume.pdf",
 };

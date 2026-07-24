@@ -107,7 +107,7 @@ const Contact: React.FC = () => {
                   <div className="w-10 h-10 rounded-full border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform duration-200">
                     <FiMail />
                   </div>
-                  <a href="mailto:krunaldevtale@gmail.com" className="hover:text-emerald-400 text-sm sm:text-base transition-colors">
+                  <a href="mailto:krunaldevtale79@gmail.com" className="hover:text-emerald-400 text-sm sm:text-base transition-colors">
                     krunaldevtale79@gmail.com
                   </a>
                 </div>
