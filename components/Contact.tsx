@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { SmoothInput } from "@/components/v1/skiper106";
+import { contactConfig } from "@/data/contactConfig";
 
 const Contact: React.FC = () => {
   const { isDark } = useTheme();
@@ -36,7 +37,7 @@ const Contact: React.FC = () => {
     setStatus("submitting");
 
     try {
-      const response = await fetch("https://formspree.io/f/mdaqoavr", {
+      const response = await fetch(`https://formspree.io/f/${contactConfig.formspreeFormId}`, {
         method: "POST",
         body: JSON.stringify({
           name,
