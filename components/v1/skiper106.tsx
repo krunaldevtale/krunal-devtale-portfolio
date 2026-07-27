@@ -160,22 +160,49 @@ const SmoothInput = React.forwardRef<HTMLInputElement, SmoothInputProps>(
     };
 
     const getCaretIndex = (target: HTMLInputElement) => {
-      const selectionStart = target.selectionStart ?? 0;
-      const selectionEnd = target.selectionEnd ?? 0;
-
-      if (selectionStart === selectionEnd) {
-        return selectionStart;
+      if (target.type === "email" || target.type === "number") {
+        return target.value.length;
       }
 
-      return target.selectionDirection === "backward"
-        ? selectionStart
-        : selectionEnd;
+      try {
+        const selectionStart = target.selectionStart;
+        if (selectionStart === null) {
+          return target.value.length;
+        }
+        const selectionEnd = target.selectionEnd ?? 0;
+
+        if (selectionStart === selectionEnd) {
+          return selectionStart;
+        }
+
+        return target.selectionDirection === "backward"
+          ? selectionStart
+          : selectionEnd;
+      } catch (e) {
+        return target.value.length;
+      }
     };
 
     const updateCaretFromInput = (target: HTMLInputElement) => {
-      const selectionStart = target.selectionStart ?? 0;
-      const selectionEnd = target.selectionEnd ?? 0;
-      const hasSelection = selectionStart !== selectionEnd;
+      let selectionStart = 0;
+      let selectionEnd = 0;
+      let isEmailOrNumber = target.type === "email" || target.type === "number";
+
+      if (!isEmailOrNumber) {
+        try {
+          const selStart = target.selectionStart;
+          if (selStart !== null) {
+            selectionStart = selStart;
+            selectionEnd = target.selectionEnd ?? 0;
+          } else {
+            isEmailOrNumber = true;
+          }
+        } catch (e) {
+          isEmailOrNumber = true;
+        }
+      }
+
+      const hasSelection = !isEmailOrNumber && (selectionStart !== selectionEnd);
       const caretIndex = getCaretIndex(target);
       const isPassword = target.type === "password";
       const textBeforeCaret = isPassword
@@ -308,7 +335,7 @@ const SmoothInput = React.forwardRef<HTMLInputElement, SmoothInputProps>(
             className="pointer-events-none invisible absolute top-0 left-0 whitespace-pre"
           />
           <motion.div
-            className="bg-indigo-500 pointer-events-none col-start-1 col-end-2 row-start-1 row-end-2 h-[1.1em] w-0.5 self-center"
+            className="bg-emerald-500 pointer-events-none col-start-1 col-end-2 row-start-1 row-end-2 h-[1.1em] w-0.5 self-center"
             style={{ x: springCaretX, opacity: caretOpacity }}
           />
         </div>
